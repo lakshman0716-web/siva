@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plant Disease Scanner - AgriVision AI</title>
+  <meta name="description" content="AI-driven Plant Leaf Pathology Scanner. Instant computer vision diagnosis for 14 crops referencing PlantVillage benchmark standards.">
+  <link rel="stylesheet" href="styles.css?v=2.1">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar injected by app.js -->
+    
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open Navigation">☰</button>
+          <h1 class="topbar-title">Diagnostics</h1>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-search-box">
+            <span class="topbar-search-icon">🔍</span>
+            <input type="text" class="topbar-search-input" id="global-search" placeholder="Search" aria-label="Search crops and diseases">
+          </div>
+          <button class="topbar-bell-btn" id="topbar-bell-btn" title="View 3 Alerts" aria-label="Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="bell-badge-count">3</span>
+          </button>
+          <div class="topbar-profile" id="topbar-profile" title="Sivaiah Aradyulu - AgriTech Lead & Agronomist">
+            <img src="assets/sivaiah-aradyulu.jpg" alt="Sivaiah Aradyulu" class="topbar-avatar-img">
+            <span class="topbar-profile-name">Sivaiah Aradyulu</span>
+            <span class="topbar-chevron">▾</span>
+          </div>
+        </div>
+      </header>
+      
+      <div class="page-content animate-fade-in">
+        <div class="scanner-container">
+          
+          <div class="card mb-6" id="upload-section">
+            <div class="text-center mb-6">
+              <div class="section-pill">Visual Pathology Engine</div>
+              <h2 style="font-size: 1.85rem; margin-bottom: 8px;">Scan & Diagnose Leaf Pathology</h2>
+              <p class="text-grey" style="max-width: 620px; margin: 0 auto;">Upload a high-resolution leaf photo for automated diagnosis against our open-source agronomy database and SQLite records.</p>
+            </div>
+            
+            <!-- Crop Selector Dropdown -->
+            <div class="crop-selector-container">
+              <div>
+                <label for="crop-select" style="font-weight: 700; font-size: 0.92rem; display: block; margin-bottom: 4px; color: var(--deep-forest-green);">Host Crop (PlantVillage standard):</label>
+                <div style="font-size: 0.8rem; color: var(--grey-text);">Select the crop species to narrow clinical pathogen morphology</div>
+              </div>
+              <select id="crop-select" class="crop-select">
+                <option value="all">🌱 Auto-Detect (All 14 PlantVillage Crops)</option>
+                <option value="Tomato">🍅 Tomato (Solanum lycopersicum)</option>
+                <option value="Potato">🥔 Potato (Solanum tuberosum)</option>
+                <option value="Chilli">🌶️ Chilli / Pepper (Capsicum annuum)</option>
+                <option value="Maize">🌽 Corn / Maize (Zea mays)</option>
+                <option value="Rice">🌾 Rice (Oryza sativa)</option>
+                <option value="Apple">🍎 Apple (Malus domestica)</option>
+                <option value="Grape">🍇 Grape (Vitis vinifera)</option>
+                <option value="Strawberry">🍓 Strawberry (Fragaria ananassa)</option>
+                <option value="Squash">🎃 Squash (Cucurbita pepo)</option>
+              </select>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="upload-area" id="drop-zone">
+              <span class="upload-icon">📸</span>
+              <h3 class="mb-2" style="font-size: 1.25rem;">Drag & Drop or Click to Upload Leaf Photo</h3>
+              <p class="text-grey mb-4" style="font-size: 0.9rem;">Supports JPG, PNG, WEBP (Maximum file size: 5MB)</p>
+              
+              <div class="flex justify-center gap-4 flex-wrap">
+                <button class="btn btn-primary" id="btn-browse" type="button">
+                  ⬆ Browse Image Files
+                </button>
+                <button class="btn btn-secondary" id="btn-camera" type="button">
+                  📷 Use Device Camera
+                </button>
+              </div>
+              
+              <input type="file" id="file-input" class="file-input" accept="image/*" style="display: none;">
+            </div>
+
+            <!-- Webcam Modal Container (Hidden by default) -->
+            <div id="webcam-container" style="display: none; margin-top: 24px;">
+              <div style="position: relative; border-radius: var(--radius-lg); overflow: hidden; background: #000; margin-bottom: 16px; box-shadow: var(--shadow-md);">
+                <video id="webcam-video" autoplay playsinline style="width: 100%; max-height: 420px; display: block;"></video>
+              </div>
+              <div class="flex justify-center gap-4">
+                <button class="btn btn-outline" id="btn-close-camera" type="button">Cancel</button>
+                <button class="btn btn-primary" id="btn-capture" type="button">
+                  📸 Capture Photo
+                </button>
+              </div>
+              <canvas id="webcam-canvas" style="display: none;"></canvas>
+            </div>
+            
+            <div class="mt-6" style="background: var(--light-grey); padding: 18px 22px; border-radius: var(--radius-md); font-size: 0.85rem; border: 1px solid var(--border-color);">
+              <strong style="color: var(--deep-forest-green);">Diagnostic Best Practices (EPPO / PlantVillage Guidelines):</strong>
+              <ul style="list-style: disc; padding-left: 20px; margin-top: 8px; color: var(--grey-text); line-height: 1.5;">
+                <li>Capture leaf lesions under uniform diffuse daylight (avoid sharp cast shadows or overexposure).</li>
+                <li>Center the margin between healthy green tissue and active necrotic or fungal lesions.</li>
+                <li>Ensure sufficient focus to distinguish fungal pustules, bacterial spots, or viral mosaic patterns.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Preview Section -->
+          <div class="card preview-area" id="preview-section">
+            <h3 class="mb-4" style="font-size: 1.25rem;">Image Ready for Processing</h3>
+            
+            <div class="image-preview-container">
+              <img id="image-preview" class="image-preview" src="" alt="Plant Leaf Preview">
+              
+              <div class="scan-overlay" id="scan-overlay">
+                <div class="scan-line"></div>
+                <div class="scanning-text" id="scanning-text">Extracting morphological features & pathogen signatures...</div>
+              </div>
+            </div>
+            
+            <div class="flex justify-center gap-4 mt-4" id="preview-actions">
+              <button class="btn btn-outline" id="btn-cancel" type="button">Choose Different Image</button>
+              <button class="btn btn-primary" id="btn-analyze" type="button">
+                ✨ Run AI Diagnosis & Save to DB
+              </button>
+            </div>
+          </div>
+
+          <!-- Result Section -->
+          <div class="result-area" id="result-section">
+            <div class="result-card">
+              <div class="result-header" id="result-header">
+                <div>
+                  <div style="font-size: 0.82rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Diagnosed Pathology</div>
+                  <h2 style="color: white; margin: 4px 0 6px; font-size: 1.75rem;" id="result-disease">Early Blight</h2>
+                  <div class="pathogen-pill" id="result-pathogen-pill">
+                    <span>🔬</span> <span id="result-pathogen">Pathogen: Alternaria solani (Fungus)</span>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 16px;">
+                  <div class="confidence-ring">
+                    <span id="result-confidence">94%</span>
+                    <span class="confidence-label">Confidence</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="result-body">
+                <!-- Metadata Bar -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; flex-wrap: wrap; gap: 12px; font-size: 0.85rem; color: var(--grey-text);">
+                  <div><strong>Scan Record:</strong> <span id="result-scan-uid" style="font-family: monospace; color: var(--agriculture-green); font-weight: 700;">SCAN-2026-0000</span></div>
+                  <div><strong>Host Crop:</strong> <span id="result-crop" style="font-weight: 600; color: var(--dark-text);">Tomato</span></div>
+                  <div><strong>Severity:</strong> <span id="result-severity" class="badge badge-warning">Moderate</span></div>
+                  <div><strong>Storage:</strong> <span style="color: #059669; font-weight: 600;">✓ Synchronized with SQLite DB</span></div>
+                </div>
+
+                <!-- Authentic Pathology Reference Benchmark -->
+                <div class="result-ref-container mb-6" id="result-ref-box">
+                  <img id="result-ref-img" src="assets/diseases/early-blight.jpg" alt="Reference Pathology Leaf" class="result-ref-img">
+                  <div style="flex: 1;">
+                    <div style="font-weight: 700; font-size: 0.95rem; color: var(--deep-forest-green); display: flex; align-items: center; gap: 6px;">
+                      <span>🔬</span> Authentic Diagnostic Benchmark
+                    </div>
+                    <p style="font-size: 0.82rem; color: var(--grey-text); margin: 4px 0 0; line-height: 1.45;">
+                      Reference specimen from PlantVillage / EPPO international pathology database. Compare your scanned leaf's lesion concentric patterns, margin chlorosis, or necrotic tissue directly against this clinical benchmark.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-8 result-body-grid">
+                  <div>
+                    <h4 class="mb-2" style="font-size: 1rem; color: var(--deep-forest-green);">Leaf Symptoms</h4>
+                    <ul class="action-list" id="result-symptoms">
+                      <!-- Filled by JS -->
+                    </ul>
+                    
+                    <h4 class="mt-6 mb-2" style="font-size: 1rem; color: var(--deep-forest-green);">Etiology & Causal Factors</h4>
+                    <ul class="action-list" id="result-causes">
+                      <!-- Filled by JS -->
+                    </ul>
+
+                    <div id="result-prevention-container" class="mt-6" style="display: none; background: #ECFDF5; padding: 14px 18px; border-radius: var(--radius-md); border-left: 4px solid #10B981; font-size: 0.85rem;">
+                      <div style="font-weight: 700; color: #065F46; margin-bottom: 4px;">Agronomic Cultural Prevention:</div>
+                      <p id="result-prevention" style="color: #047857; margin: 0; line-height: 1.45;"></p>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h4 class="mb-2" style="font-size: 1rem; color: var(--danger-red);">Recommended IPM Protocols</h4>
+                    <div style="background: var(--light-grey); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                      <div id="result-actions" style="display: flex; flex-direction: column; gap: 10px;">
+                        <!-- Filled by JS -->
+                      </div>
+                    </div>
+
+                    <div style="margin-top: 16px; text-align: center;">
+                      <a href="diseases.html" class="btn btn-outline" style="width: 100%; padding: 10px; font-size: 0.88rem;">
+                        📚 View Full Disease Library Profile
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="text-center mt-6 flex justify-center gap-4 flex-wrap">
+              <button class="btn btn-primary" id="btn-reset" type="button">
+                <span>🔄</span> Scan Another Leaf
+              </button>
+              <a href="history.html" class="btn btn-secondary">
+                <span>📋</span> View Scan History
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="data.js?v=2.1"></script>
+  <script src="app.js?v=2.1"></script>
+  <script src="scanner.js?v=2.1"></script>
+</body>
+</html>

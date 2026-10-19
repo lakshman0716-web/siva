@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plant Disease Detection - AgriVision AI</title>
+  <meta name="description" content="Smarter Plant Care. Healthier Crops. Detect plant leaf diseases with our interactive AI-driven agricultural intelligence prototype.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header Navigation -->
+  <header class="landing-header">
+    <a href="index.html" class="landing-logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 0 8px rgba(0, 230, 118, 0.45));">
+        <path d="M12 2C6.5 2 3 6.5 3 11C3 16 7.5 19.5 12 21C16.5 19.5 21 16 21 11C21 6.5 17.5 2 12 2Z" fill="rgba(0, 230, 118, 0.25)" stroke="#00E676" stroke-width="2"/>
+        <path d="M12 6V18M12 10C14 8.5 16 8 18 8.5M12 14C10 12.5 8 12 6 12.5" stroke="#00E676" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span>AgriVision AI</span>
+    </a>
+    
+    <nav class="landing-nav">
+      <a href="index.html">Home</a>
+      <a href="#detection-tool">Detect Disease</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="scanner.html">Scanner</a>
+      <a href="diseases.html">Disease Library</a>
+      <a href="history.html">Scan History</a>
+      <a href="dashboard.html" class="btn btn-primary btn-sm">
+        Launch Dashboard
+      </a>
+    </nav>
+
+    <!-- Mobile Navigation Toggle -->
+    <button class="landing-mobile-toggle" id="landing-mobile-toggle" aria-label="Toggle Navigation Menu">
+      ☰
+    </button>
+  </header>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="landing-mobile-drawer" id="landing-mobile-drawer">
+    <a href="index.html">🌱 Home</a>
+    <a href="#detection-tool">🔍 Detect Disease</a>
+    <a href="dashboard.html">📊 Farm Dashboard</a>
+    <a href="scanner.html">📷 Plant Scanner</a>
+    <a href="diseases.html">📚 Disease Library</a>
+    <a href="history.html">📋 Scan History</a>
+    <a href="dashboard.html" class="btn btn-primary" style="margin-top: 8px;">Launch Dashboard</a>
+  </div>
+
+  <main>
+    <!-- ========================================================
+         Hero Section with Cinematic Agricultural Technology Video
+         ======================================================== -->
+    <section class="hero-video-section" id="hero">
+      <!-- Background Video Wrapper -->
+      <div class="video-background-wrapper">
+        <video
+          id="hero-video"
+          autoplay
+          muted
+          loop
+          playsinline
+          poster="assets/hero-poster.jpg"
+          preload="metadata"
+          class="hero-video"
+          aria-hidden="true"
+        >
+          <source src="assets/hero-video.mp4" type="video/mp4">
+          <source src="assets/hero-video.webm" type="video/webm">
+          <!-- Fallback image inside video element -->
+          <img src="assets/hero-poster.jpg" alt="Agricultural Technology Drone Crop Health Analysis" class="hero-video-fallback">
+        </video>
+        <!-- Static Fallback Element if video fails or is disabled -->
+        <img src="assets/hero-poster.jpg" alt="Agricultural Technology Drone Crop Health Analysis" id="hero-static-fallback" class="hero-video-fallback">
+        <!-- Subtle Dark-Green Overlay for High Contrast & Text Readability -->
+        <div class="hero-video-overlay"></div>
+      </div>
+
+      <!-- Hero Text Content -->
+      <div class="hero-content-container">
+        <div class="hero-badge animate-hero-badge">
+          <span>🌱</span> Next-Gen AgriTech Intelligence
+        </div>
+        
+        <h1 class="hero-title animate-hero-title">Plant Disease Detection</h1>
+        
+        <p class="hero-subtitle animate-hero-subtitle">
+          Smarter Plant Care. Healthier Crops.
+        </p>
+        
+        <p class="hero-disclaimer animate-hero-subtitle">
+          AI Diagnostic Demonstration Prototype — Explore automated visual analysis referencing verified open-source pathology datasets from PlantVillage & EPPO.
+        </p>
+        
+        <div class="hero-ctas animate-hero-ctas">
+          <a href="#detection-tool" class="btn btn-hero-primary" id="btn-start-detection">
+            <span>🔍</span> Start Detection
+          </a>
+          <a href="#how-it-works" class="btn btn-hero-secondary" id="btn-how-it-works">
+            <span>📚</span> Learn How It Works
+          </a>
+        </div>
+
+        <!-- Real-Time Metrics Strip -->
+        <div class="hero-stats-strip animate-hero-stats">
+          <div class="hero-stat-item">
+            <span class="stat-number">10+</span>
+            <span class="stat-label">Host Crops Supported</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="hero-stat-item">
+            <span class="stat-number">38</span>
+            <span class="stat-label">PlantVillage Classes</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="hero-stat-item">
+            <span class="stat-number">25+</span>
+            <span class="stat-label">Verified IPM Protocols</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scroll Down Indicator -->
+      <a href="#detection-tool" class="scroll-down-hint" aria-label="Scroll down to plant disease detection tool">
+        <span>↓</span>
+      </a>
+    </section>
+
+    <!-- ========================================================
+         Interactive Plant Disease Detection Tool Section
+         ======================================================== -->
+    <section id="detection-tool" class="features-section" style="padding-top: 80px;">
+      <div class="scanner-container">
+        
+        <div class="section-headline-area">
+          <div class="section-pill">Interactive Diagnostic Tool</div>
+          <h2 style="font-size: 2rem; margin-bottom: 8px;">Instant Leaf Disease Analysis</h2>
+          <p class="text-grey">Upload a plant leaf photo or use your device camera. Our computer vision demo analyzes lesion signatures and logs the prediction to the SQLite database.</p>
+        </div>
+
+        <!-- Upload & Detection Card -->
+        <div class="card mb-6" id="upload-section">
+          <!-- Crop Selector Dropdown -->
+          <div class="crop-selector-container">
+            <div>
+              <label for="crop-select" style="font-weight: 700; font-size: 0.92rem; display: block; margin-bottom: 4px; color: var(--deep-forest-green);">Host Crop (PlantVillage standard):</label>
+              <div style="font-size: 0.8rem; color: var(--grey-text);">Select the crop to narrow down clinical pathogen signatures</div>
+            </div>
+            <select id="crop-select" class="crop-select">
+              <option value="all">🌱 Auto-Detect (All 10+ Cataloged Crops)</option>
+              <option value="Tomato">🍅 Tomato (Solanum lycopersicum)</option>
+              <option value="Potato">🥔 Potato (Solanum tuberosum)</option>
+              <option value="Chilli">🌶️ Chilli / Pepper (Capsicum annuum)</option>
+              <option value="Maize">🌽 Corn / Maize (Zea mays)</option>
+              <option value="Rice">🌾 Rice (Oryza sativa)</option>
+              <option value="Apple">🍎 Apple (Malus domestica)</option>
+              <option value="Grape">🍇 Grape (Vitis vinifera)</option>
+              <option value="Strawberry">🍓 Strawberry (Fragaria ananassa)</option>
+              <option value="Squash">🎃 Squash (Cucurbita pepo)</option>
+            </select>
+          </div>
+
+          <!-- Drag and Drop Zone -->
+          <div class="upload-area" id="drop-zone">
+            <span class="upload-icon">📸</span>
+            <h3 class="mb-2" style="font-size: 1.25rem;">Drag & Drop or Click to Upload Leaf Photo</h3>
+            <p class="text-grey mb-4" style="font-size: 0.9rem;">Supports JPG, PNG, WEBP (Max 5MB)</p>
+            
+            <div class="flex justify-center gap-4 flex-wrap">
+              <button class="btn btn-primary" id="btn-browse" type="button">
+                ⬆ Browse Files
+              </button>
+              <button class="btn btn-secondary" id="btn-camera" type="button">
+                📷 Use Camera
+              </button>
+            </div>
+            
+            <input type="file" id="file-input" class="file-input" accept="image/*" style="display: none;">
+          </div>
+
+          <!-- Webcam Container (Hidden by default) -->
+          <div id="webcam-container" style="display: none; margin-top: 24px;">
+            <div style="position: relative; border-radius: var(--radius-lg); overflow: hidden; background: #000; margin-bottom: 16px; box-shadow: var(--shadow-md);">
+              <video id="webcam-video" autoplay playsinline style="width: 100%; max-height: 400px; display: block;"></video>
+            </div>
+            <div class="flex justify-center gap-4">
+              <button class="btn btn-outline" id="btn-close-camera" type="button">Cancel</button>
+              <button class="btn btn-primary" id="btn-capture" type="button">
+                📸 Capture Photo
+              </button>
+            </div>
+            <canvas id="webcam-canvas" style="display: none;"></canvas>
+          </div>
+          
+          <div class="mt-6" style="background: var(--light-grey); padding: 16px 20px; border-radius: var(--radius-md); font-size: 0.85rem; border: 1px solid var(--border-color);">
+            <strong style="color: var(--deep-forest-green);">Photo Guidelines for Reliable Detections:</strong>
+            <ul style="list-style: disc; padding-left: 20px; margin-top: 6px; color: var(--grey-text); line-height: 1.5;">
+              <li>Frame individual leaves in clear, natural lighting without harsh shadows.</li>
+              <li>Include both healthy green margin and active lesion spotting.</li>
+              <li>Ensure steady focus on circular target rings, pustules, or leaf margins.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="card preview-area" id="preview-section">
+          <h3 class="mb-4" style="font-size: 1.25rem;">Leaf Sample Ready for Analysis</h3>
+          
+          <div class="image-preview-container">
+            <img id="image-preview" class="image-preview" src="" alt="Plant Leaf Preview">
+            
+            <div class="scan-overlay" id="scan-overlay">
+              <div class="scan-line"></div>
+              <div class="scanning-text" id="scanning-text">Extracting morphological features...</div>
+            </div>
+          </div>
+          
+          <div class="flex justify-center gap-4 mt-4" id="preview-actions">
+            <button class="btn btn-outline" id="btn-cancel" type="button">Choose Different Photo</button>
+            <button class="btn btn-primary" id="btn-analyze" type="button">
+              ✨ Run AI Diagnosis & Save to DB
+            </button>
+          </div>
+        </div>
+
+        <!-- Result Section -->
+        <div class="result-area" id="result-section">
+          <div class="result-card">
+            <div class="result-header" id="result-header">
+              <div>
+                <div style="font-size: 0.82rem; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">Diagnosed Condition</div>
+                <h2 style="color: white; margin: 4px 0 6px; font-size: 1.75rem;" id="result-disease">Early Blight</h2>
+                <div class="pathogen-pill" id="result-pathogen-pill">
+                  <span>🔬</span> <span id="result-pathogen">Pathogen: Alternaria solani (Fungus)</span>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px;">
+                <div class="confidence-ring">
+                  <span id="result-confidence">94%</span>
+                  <span class="confidence-label">Confidence</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="result-body">
+              <!-- Metadata Bar -->
+              <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; flex-wrap: wrap; gap: 12px; font-size: 0.85rem; color: var(--grey-text);">
+                <div><strong>Scan Record:</strong> <span id="result-scan-uid" style="font-family: monospace; color: var(--agriculture-green); font-weight: 700;">SCAN-2026-LIVE</span></div>
+                <div><strong>Host Crop:</strong> <span id="result-crop" style="font-weight: 600; color: var(--dark-text);">Tomato</span></div>
+                <div><strong>Severity:</strong> <span id="result-severity" class="badge badge-warning">Moderate</span></div>
+                <div><strong>Storage:</strong> <span style="color: #059669; font-weight: 600;">✓ Saved to Database</span></div>
+              </div>
+
+              <!-- Authentic Pathology Reference Benchmark -->
+              <div class="result-ref-container mb-6" id="result-ref-box">
+                <img id="result-ref-img" src="assets/diseases/early-blight.jpg" alt="Reference Pathology Leaf" class="result-ref-img">
+                <div style="flex: 1;">
+                  <div style="font-weight: 700; font-size: 0.95rem; color: var(--deep-forest-green); display: flex; align-items: center; gap: 6px;">
+                    <span>🔬</span> Authentic Diagnostic Benchmark
+                  </div>
+                  <p style="font-size: 0.82rem; color: var(--grey-text); margin: 4px 0 0; line-height: 1.45;">
+                    Reference specimen from PlantVillage / EPPO international pathology database. Compare your scanned leaf's lesion concentric patterns, margin chlorosis, or necrotic tissue directly against this clinical benchmark.
+                  </p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-8 result-body-grid">
+                <div>
+                  <h4 class="mb-2" style="font-size: 1rem; color: var(--deep-forest-green);">Leaf Symptoms</h4>
+                  <ul class="action-list" id="result-symptoms">
+                    <!-- Populated by JS -->
+                  </ul>
+                  
+                  <h4 class="mt-6 mb-2" style="font-size: 1rem; color: var(--deep-forest-green);">Etiology & Causal Factors</h4>
+                  <ul class="action-list" id="result-causes">
+                    <!-- Populated by JS -->
+                  </ul>
+
+                  <div id="result-prevention-container" class="mt-6" style="display: none; background: #ECFDF5; padding: 14px 18px; border-radius: var(--radius-md); border-left: 4px solid #10B981; font-size: 0.85rem;">
+                    <div style="font-weight: 700; color: #065F46; margin-bottom: 4px;">Agronomic Prevention Strategy</div>
+                    <p id="result-prevention" style="color: #047857; margin: 0; line-height: 1.45;"></p>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 class="mb-2" style="font-size: 1rem; color: var(--danger-red);">Recommended IPM Protocols</h4>
+                  <div style="background: var(--light-grey); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                    <div id="result-actions" style="display: flex; flex-direction: column; gap: 10px;">
+                      <!-- Populated by JS -->
+                    </div>
+                  </div>
+
+                  <div style="margin-top: 16px; text-align: center;">
+                    <a href="diseases.html" class="btn btn-outline" style="width: 100%; padding: 10px; font-size: 0.88rem;">
+                      📚 View Complete Disease Library
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="text-center mt-6 flex justify-center gap-4 flex-wrap">
+            <button class="btn btn-primary" id="btn-reset" type="button">
+              <span>🔄</span> Scan Another Leaf
+            </button>
+            <a href="history.html" class="btn btn-secondary">
+              <span>📋</span> View Scan History
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================
+         How It Works Section
+         ======================================================== -->
+    <section id="how-it-works" class="features-section" style="background: rgba(243, 247, 244, 0.7); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+      <div class="container">
+        <div class="section-headline-area">
+          <div class="section-pill">Workflow</div>
+          <h2 style="font-size: 2rem; margin-bottom: 16px;">How Plant Disease Detection Works</h2>
+          <p class="text-grey">From high-resolution leaf image acquisition to actionable Integrated Pest Management protocols.</p>
+        </div>
+
+        <div class="workflow-steps">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <h3 style="font-size: 1.2rem; margin-bottom: 8px;">Capture Leaf Sample</h3>
+            <p class="text-grey">Take a photo using your smartphone or upload existing field imagery. Ensure good lighting and center the leaf lesion.</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <h3 style="font-size: 1.2rem; margin-bottom: 8px;">Computer Vision Analysis</h3>
+            <p class="text-grey">The visual signature is cross-referenced against the 38 PlantVillage pathology classes and EPPO global pathogen database.</p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <h3 style="font-size: 1.2rem; margin-bottom: 8px;">Actionable IPM Protocols</h3>
+            <p class="text-grey">Receive tailored biological biocontrols, chemical treatments (with pre-harvest intervals), and agronomic cultural prevention measures.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         Features & Open Source Standards Section
+         ======================================================== -->
+    <section id="features" class="features-section">
+      <div class="container">
+        <div class="section-headline-area">
+          <div class="section-pill">Open Agronomy Architecture</div>
+          <h2 style="font-size: 2rem; margin-bottom: 16px;">Grounded in Verified Agronomic Science</h2>
+          <p class="text-grey">Engineered using benchmark open-source datasets and plant pathology standards.</p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">🌿</div>
+            <h3 style="font-size: 1.2rem; margin-bottom: 8px;">PlantVillage Benchmark</h3>
+            <p class="text-grey">Referencing the 38 diagnostic classes across 14 crops developed by Penn State & EPFL researchers.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔬</div>
+            <h3 style="font-size: 1.2rem; margin-bottom: 8px;">EPPO Global Taxonomy</h3>
+            <p class="text-grey">Standardized international pathogen classification codes and quarantine watchlist monitoring.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3 style="font-size: 1.2rem; margin-bottom: 8px;">FAO IPM Guidelines</h3>
+            <p class="text-grey">Multi-tiered integrated pest management recommendations balancing biological, chemical, and cultural practices.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="landing-logo justify-center mb-4" style="color: white;">
+      <span>🌱</span> AgriVision AI
+    </div>
+    <p style="color: #9CA3AF; max-width: 620px; margin: 0 auto; line-height: 1.6; font-size: 0.9rem;">
+      Agricultural intelligence demonstration prototype showcasing plant pathology workflows. AI results are simulated for demonstration purposes and should be verified with certified agronomic extension agents.
+    </p>
+    <div style="margin-top: 24px; display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;">
+      <a href="dashboard.html" style="color: #6EE7B7; text-decoration: underline; font-size: 0.9rem; font-weight: 500;">Open Farm Dashboard</a>
+      <a href="scanner.html" style="color: #6EE7B7; text-decoration: underline; font-size: 0.9rem; font-weight: 500;">Plant Scanner</a>
+      <a href="diseases.html" style="color: #6EE7B7; text-decoration: underline; font-size: 0.9rem; font-weight: 500;">Disease Library</a>
+      <a href="history.html" style="color: #6EE7B7; text-decoration: underline; font-size: 0.9rem; font-weight: 500;">Scan History</a>
+      <a href="/docs" style="color: #6EE7B7; text-decoration: underline; font-size: 0.9rem; font-weight: 500;">FastAPI Swagger Docs</a>
+    </div>
+    <p class="mt-6" style="font-size: 0.85rem; color: #6B7280;">&copy; 2026 AgriVision AI Prototype. All rights reserved.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+  <script src="scanner.js"></script>
+  <script>
+    // Video Fallback and Optimization Handler
+    document.addEventListener('DOMContentLoaded', () => {
+      const heroVideo = document.getElementById('hero-video');
+      const staticFallback = document.getElementById('hero-static-fallback');
+
+      // Check for prefers-reduced-motion accessibility setting
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion && heroVideo) {
+        heroVideo.pause();
+        heroVideo.style.display = 'none';
+        if (staticFallback) staticFallback.style.display = 'block';
+        return;
+      }
+
+      if (heroVideo) {
+        heroVideo.muted = true;
+        heroVideo.play().catch((err) => {
+          console.log("Autoplay prevented or video playback deferred:", err);
+          if (staticFallback) staticFallback.style.display = 'block';
+        });
+
+        heroVideo.addEventListener('error', () => {
+          console.warn("Video playback encountered error, switching to static poster.");
+          heroVideo.style.display = 'none';
+          if (staticFallback) staticFallback.style.display = 'block';
+        });
+      }
+
+      // Smooth scrolling for CTA buttons
+      const btnStart = document.getElementById('btn-start-detection');
+      if (btnStart) {
+        btnStart.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.getElementById('detection-tool');
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      }
+
+      const btnHow = document.getElementById('btn-how-it-works');
+      if (btnHow) {
+        btnHow.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.getElementById('how-it-works');
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

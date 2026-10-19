@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agronomic Disease Library - AgriVision AI</title>
+  <meta name="description" content="Reference plant pathology database compiled from PlantVillage benchmark and EPPO Global Database with real high-resolution pathology leaf imagery.">
+  <link rel="stylesheet" href="styles.css?v=2.1">
+</head>
+<body>
+  <div class="app-container">
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open Navigation">☰</button>
+          <h1 class="topbar-title">Crop Monitoring</h1>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-search-box">
+            <span class="topbar-search-icon">🔍</span>
+            <input type="text" class="topbar-search-input" id="global-search" placeholder="Search" aria-label="Search crops and diseases">
+          </div>
+          <button class="topbar-bell-btn" id="topbar-bell-btn" title="View 3 Alerts" aria-label="Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="bell-badge-count">3</span>
+          </button>
+          <div class="topbar-profile" id="topbar-profile" title="Sivaiah Aradyulu - AgriTech Lead & Agronomist">
+            <img src="assets/sivaiah-aradyulu.jpg" alt="Sivaiah Aradyulu" class="topbar-avatar-img">
+            <span class="topbar-profile-name">Sivaiah Aradyulu</span>
+            <span class="topbar-chevron">▾</span>
+          </div>
+        </div>
+      </header>
+      
+      <div class="page-content animate-fade-in">
+        
+        <div class="card mb-6" style="padding: 22px 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div>
+              <div class="section-pill" style="margin-bottom: 6px;">Pathology Knowledge Base</div>
+              <h2 style="font-size: 1.4rem; color: var(--deep-forest-green); margin: 0 0 4px;">Explore Clinical Crop Pathogens</h2>
+              <p class="text-grey" style="font-size: 0.9rem; margin: 0;">
+                High-resolution leaf pathology images, environmental triggers, and IPM recommendations for 14 major agricultural crops. Click any leaf photo to inspect lesion morphology.
+              </p>
+            </div>
+            
+            <button class="btn btn-outline btn-sm" id="btn-export-db">
+              <span>⬇</span> Export Open DB (JSON)
+            </button>
+          </div>
+          
+          <div class="search-filter-bar">
+            <input type="text" class="search-bar" placeholder="🔍 Search diseases, scientific pathogens, or symptoms..." id="search-input">
+          </div>
+        </div>
+
+        <!-- Crop Filter Chips -->
+        <div class="crop-filter-chips" id="crop-chips">
+          <button class="chip-btn active" data-crop="all">🌱 All Crops</button>
+          <button class="chip-btn" data-crop="Tomato">🍅 Tomato</button>
+          <button class="chip-btn" data-crop="Potato">🥔 Potato</button>
+          <button class="chip-btn" data-crop="Chilli">🌶️ Chilli</button>
+          <button class="chip-btn" data-crop="Maize">🌽 Maize</button>
+          <button class="chip-btn" data-crop="Rice">🌾 Rice</button>
+          <button class="chip-btn" data-crop="Apple">🍎 Apple</button>
+          <button class="chip-btn" data-crop="Grape">🍇 Grape</button>
+          <button class="chip-btn" data-crop="Squash">🎃 Squash</button>
+        </div>
+        
+        <!-- Diseases Grid -->
+        <div class="disease-grid" id="disease-grid">
+          <!-- Populated dynamically by JS -->
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Lightbox Modal for High-Resolution Lesion Inspection -->
+  <div class="image-lightbox" id="image-lightbox" role="dialog" aria-modal="true" aria-labelledby="lightbox-title">
+    <div class="lightbox-content">
+      <button class="lightbox-close" id="lightbox-close" aria-label="Close Preview">✕</button>
+      <img src="" alt="Disease Inspection" class="lightbox-img" id="lightbox-img">
+      <div class="lightbox-caption">
+        <div>
+          <h3 id="lightbox-title" style="margin: 0; font-size: 1.25rem; color: var(--deep-forest-green);">Disease Title</h3>
+          <div id="lightbox-pathogen" style="font-size: 0.85rem; color: #047857; font-style: italic; margin-top: 3px;">Pathogen Details</div>
+        </div>
+        <span class="badge" id="lightbox-badge">Risk</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js?v=2.1"></script>
+  <script src="app.js?v=2.1"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const diseaseGrid = document.getElementById('disease-grid');
+      const searchInput = document.getElementById('search-input');
+      const cropChips = document.querySelectorAll('.chip-btn');
+      const btnExport = document.getElementById('btn-export-db');
+      
+      let allDiseases = [];
+      try {
+        allDiseases = await window.AgriDB.getDiseases();
+      } catch (e) {
+        allDiseases = APP_DATA.diseases;
+      }
+
+      let selectedCrop = 'all';
+
+      function renderDiseases(diseases) {
+        diseaseGrid.innerHTML = '';
+        
+        if (!diseases || diseases.length === 0) {
+           diseaseGrid.innerHTML = `
+             <div style="grid-column: 1 / -1; text-align: center; padding: 48px; color: var(--grey-text); background: white; border-radius: var(--radius-lg); border: 1px dashed var(--border-color);">
+               No clinical disease profiles match your search criteria.
+             </div>
+           `;
+           return;
+        }
+
+        diseases.forEach(d => {
+          const diseaseName = d.disease_name || d.name;
+          const pathogenName = d.pathogen_name || d.pathogen || 'Microbial pathogen';
+          const pathogenType = d.pathogen_type || d.pathogenType || 'Pathogen';
+          const risk = d.risk_level || d.risk || 'Low';
+          const cropsList = d.crops || [];
+          const symptomsList = d.symptoms || [];
+          const causesList = d.causes || [];
+          const actionsList = d.actions || [];
+          const temp = d.optimal_temp || d.optimalTemp || '20-28°C';
+          const humidity = d.optimal_humidity || d.optimalHumidity || '60-80%';
+          const isQuarantine = d.is_quarantine || d.quarantine;
+
+          // Resolve real pathology leaf image
+          const diseaseSlug = d.slug || d.id || 'healthy';
+          const imgUrl = d.image_url || d.image || `assets/diseases/${diseaseSlug}.jpg`;
+
+          let badgeClass = 'badge-success';
+          if (risk.toLowerCase().includes('moderate') || risk.toLowerCase().includes('medium')) badgeClass = 'badge-warning';
+          if (risk.toLowerCase().includes('high') || risk.toLowerCase().includes('severe')) badgeClass = 'badge-danger';
+          
+          let symptomsHtml = symptomsList.slice(0, 3).map(s => `<li>${s}</li>`).join('');
+          let causesHtml = causesList.slice(0, 2).map(c => `<li>${c}</li>`).join('');
+
+          let actionsHtml = '';
+          if (actionsList.length > 0) {
+            actionsHtml = actionsList.map(a => `<div class="treatment-item">${a}</div>`).join('');
+          } else if (d.treatments && d.treatments.length > 0) {
+            actionsHtml = d.treatments.map(t => `
+              <div class="treatment-item">
+                <strong>[${t.treatment_type}] ${t.title}</strong>: ${t.instructions}
+                ${t.active_ingredient ? `<div style="color: #047857; font-size: 0.75rem; margin-top: 2px;">Active: ${t.active_ingredient} ${t.phi_days ? `(PHI: ${t.phi_days}d)` : ''}</div>` : ''}
+              </div>
+            `).join('');
+          }
+
+          const cardId = `disease-${d.id || d.slug || Math.random().toString(36).substr(2, 6)}`;
+          const safeTitle = diseaseName.replace(/'/g, "\\'");
+          const safePathogen = pathogenName.replace(/'/g, "\\'");
+
+          diseaseGrid.innerHTML += `
+            <div class="disease-card">
+              <!-- Real Leaf Pathology Image Banner -->
+              <div class="disease-card-img-wrap" onclick="openLightbox('${imgUrl}', '${safeTitle}', '${safePathogen}', '${risk}')" title="Click to view macro leaf lesions">
+                <img src="${imgUrl}" alt="${diseaseName}" class="disease-card-img" loading="lazy" onerror="this.onerror=null; this.src='assets/diseases/healthy.jpg';">
+                <div class="disease-card-crop-pill">🌿 ${cropsList[0] || 'Crop'}</div>
+                <div class="disease-card-status-pill badge ${badgeClass}">${risk} Risk</div>
+                <div class="disease-card-zoom-hint">🔍 Inspect Lesions</div>
+              </div>
+
+              <div class="disease-card-header">
+                <div>
+                  <div class="disease-title">${diseaseName}</div>
+                  <div class="disease-pathogen">🔬 ${pathogenName} (${pathogenType})</div>
+                  <div class="disease-crops">Host species: <strong>${cropsList.join(', ')}</strong></div>
+                </div>
+                <div>
+                  ${isQuarantine ? '<span class="badge badge-danger" style="font-size: 0.65rem;">EPPO Watchlist</span>' : ''}
+                </div>
+              </div>
+
+              <div class="disease-body">
+                <div class="env-trigger-box">
+                  <div>🌡️ <strong>Temp:</strong> ${temp}</div>
+                  <div>💧 <strong>Humidity:</strong> ${humidity}</div>
+                </div>
+
+                <div class="info-section">
+                  <div class="info-title">Key Symptoms</div>
+                  <ul class="info-list">
+                    ${symptomsHtml}
+                  </ul>
+                </div>
+
+                <div class="info-section">
+                  <div class="info-title">Environmental Triggers</div>
+                  <ul class="info-list">
+                    ${causesHtml}
+                  </ul>
+                </div>
+
+                <div id="extended-${cardId}" style="display: none; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border-color);">
+                  <div class="info-title" style="color: var(--danger-red);">Integrated Pest Management (IPM) Protocols:</div>
+                  <div style="margin-top: 8px;">
+                    ${actionsHtml || '<p style="font-size: 0.8rem; color: var(--grey-text);">Follow standard agronomic sanitation practices.</p>'}
+                  </div>
+                  ${d.prevention ? `
+                    <div style="margin-top: 10px; background: #ECFDF5; padding: 12px; border-radius: var(--radius-sm); font-size: 0.82rem; color: #065F46; border: 1px solid #A7F3D0;">
+                      <strong>Prevention Protocol:</strong> ${d.prevention}
+                    </div>
+                  ` : ''}
+                </div>
+                
+                <div style="margin-top: auto; padding-top: 14px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color);">
+                  <button onclick="toggleDetails('${cardId}')" id="btn-${cardId}" class="btn btn-outline btn-sm">
+                    View Treatments & Protocols ↓
+                  </button>
+                  <a href="scanner.html?crop=${encodeURIComponent((cropsList && cropsList[0] && cropsList[0] !== 'All Crops') ? cropsList[0] : 'Tomato')}" style="font-size: 0.82rem; color: var(--agriculture-green); text-decoration: underline; font-weight: 700;">
+                    Scan for this →
+                  </a>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      }
+      
+      window.toggleDetails = function(id) {
+        const div = document.getElementById(`extended-${id}`);
+        const btn = document.getElementById(`btn-${id}`);
+        if (div.style.display === 'none') {
+          div.style.display = 'block';
+          btn.textContent = 'Hide Treatments ↑';
+        } else {
+          div.style.display = 'none';
+          btn.textContent = 'View Treatments & Protocols ↓';
+        }
+      };
+
+      // Lightbox Modal Handlers
+      window.openLightbox = function(imgSrc, title, pathogen, risk) {
+        const lb = document.getElementById('image-lightbox');
+        document.getElementById('lightbox-img').src = imgSrc;
+        document.getElementById('lightbox-title').textContent = title;
+        document.getElementById('lightbox-pathogen').textContent = '🔬 ' + pathogen;
+        const badge = document.getElementById('lightbox-badge');
+        badge.textContent = risk + ' Risk';
+        badge.className = 'badge ' + (risk.toLowerCase().includes('high') ? 'badge-danger' : (risk.toLowerCase().includes('mod') ? 'badge-warning' : 'badge-success'));
+        lb.classList.add('active');
+      };
+
+      document.getElementById('lightbox-close').addEventListener('click', () => {
+        document.getElementById('image-lightbox').classList.remove('active');
+      });
+
+      document.getElementById('image-lightbox').addEventListener('click', (e) => {
+        if (e.target.id === 'image-lightbox') {
+          e.target.classList.remove('active');
+        }
+      });
+
+      // Filter and Search Handler
+      function applyFilters() {
+        const term = searchInput.value.toLowerCase().trim();
+        
+        let filtered = allDiseases.filter(d => {
+          const diseaseName = (d.disease_name || d.name || '').toLowerCase();
+          const pathogen = (d.pathogen_name || d.pathogen || '').toLowerCase();
+          const cropsList = d.crops || [];
+          const symptoms = (d.symptoms || []).join(' ').toLowerCase();
+
+          // Crop Filter
+          const matchesCrop = (selectedCrop === 'all') || 
+            cropsList.includes('All Crops') || 
+            cropsList.some(c => c.toLowerCase() === selectedCrop.toLowerCase());
+
+          // Search term
+          const matchesSearch = !term || 
+            diseaseName.includes(term) || 
+            pathogen.includes(term) || 
+            symptoms.includes(term) || 
+            cropsList.some(c => c.toLowerCase().includes(term));
+
+          return matchesCrop && matchesSearch;
+        });
+
+        renderDiseases(filtered);
+      }
+
+      // Check URL parameters for search or crop pre-filter (e.g. diseases.html?search=Early%20Blight or ?crop=Tomato)
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchParam = urlParams.get('search');
+      const cropParam = urlParams.get('crop');
+
+      if (cropParam) {
+        selectedCrop = cropParam;
+        cropChips.forEach(chip => {
+          if (chip.dataset.crop.toLowerCase() === cropParam.toLowerCase()) {
+            chip.classList.add('active');
+          } else {
+            chip.classList.remove('active');
+          }
+        });
+      }
+
+      if (searchParam) {
+        searchInput.value = searchParam;
+      }
+
+      if (searchParam || cropParam) {
+        applyFilters();
+        if (searchParam) {
+          setTimeout(() => {
+            const firstExtended = document.querySelector('[id^="extended-disease-"]');
+            if (firstExtended) {
+              firstExtended.style.display = 'block';
+              const cardId = firstExtended.id.replace('extended-', '');
+              const btn = document.getElementById(`btn-${cardId}`);
+              if (btn) btn.textContent = 'Hide Treatments ↑';
+            }
+          }, 80);
+        }
+      } else {
+        // Initial render
+        renderDiseases(allDiseases);
+      }
+
+      // Search input event
+      searchInput.addEventListener('input', applyFilters);
+
+      // Crop chips events
+      cropChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          cropChips.forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          selectedCrop = chip.dataset.crop;
+          applyFilters();
+        });
+      });
+
+      // Export Open DB
+      btnExport.addEventListener('click', () => {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allDiseases, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "agrivision_plant_disease_database_export.json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - AgriVision AI</title>
+  <meta name="description" content="AgriVision AI Farm & Crop Health Dashboard. Real-time pathology index, field alerts, and crop health monitoring.">
+  <link rel="stylesheet" href="styles.css?v=2.1">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar injected by app.js -->
+    
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open Navigation">☰</button>
+          <h1 class="topbar-title">Dashboard</h1>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-search-box">
+            <span class="topbar-search-icon">🔍</span>
+            <input type="text" class="topbar-search-input" id="global-search" placeholder="Search" aria-label="Search crops and diseases">
+          </div>
+          <button class="topbar-bell-btn" id="topbar-bell-btn" title="View 3 Alerts" aria-label="Notifications">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="bell-badge-count">3</span>
+          </button>
+          <div class="topbar-profile" id="topbar-profile" title="Sivaiah Aradyulu - AgriTech Lead & Agronomist">
+            <img src="assets/sivaiah-aradyulu.jpg" alt="Sivaiah Aradyulu" class="topbar-avatar-img">
+            <span class="topbar-profile-name">Sivaiah Aradyulu</span>
+            <span class="topbar-chevron">▾</span>
+          </div>
+        </div>
+      </header>
+      
+      <div class="page-content animate-fade-in">
+        
+        <!-- Welcome Greeting Block -->
+        <div class="dash-welcome">
+          <h1>Good morning, Sivaiah!</h1>
+          <p class="dash-date" id="dash-date-str">Date november 1, 2022</p>
+        </div>
+
+        <!-- 4 Top KPI Cards Grid -->
+        <div class="kpi-row">
+          
+          <!-- KPI 1: Crop Health Score -->
+          <div class="dash-kpi-card">
+            <div class="kpi-header-line">
+              <span class="kpi-label">Crop Health Score</span>
+            </div>
+            <div class="kpi-gauge-content">
+              <div class="kpi-gauge-left">
+                <div class="kpi-val-neon" id="dash-health-score">89%</div>
+                <div class="kpi-status-sub">Good</div>
+                <div class="kpi-rate-sub">+2.5% vs yesterday</div>
+              </div>
+              <div class="kpi-gauge-right">
+                <!-- Speedometer Arc SVG -->
+                <svg class="gauge-svg" viewBox="0 0 100 55">
+                  <path d="M 12 50 A 38 38 0 0 1 88 50" fill="none" stroke="#123022" stroke-width="8" stroke-linecap="round"/>
+                  <path d="M 12 50 A 38 38 0 0 1 88 50" fill="none" stroke="#00E676" stroke-width="8" stroke-linecap="round" stroke-dasharray="119.4" stroke-dashoffset="13" style="filter: drop-shadow(0 0 6px #00E676);"/>
+                  <circle cx="77" cy="22" r="4.5" fill="#FFFFFF" stroke="#00E676" stroke-width="2" style="filter: drop-shadow(0 0 4px #00E676);"/>
+                </svg>
+                <!-- Mini Waveform Wave below gauge -->
+                <svg class="waveform-mini-svg" viewBox="0 0 90 18">
+                  <path d="M 0 12 Q 10 2 20 12 T 40 12 T 60 4 T 75 14 T 90 8" fill="none" stroke="#00E676" stroke-width="1.8" stroke-linecap="round" opacity="0.85"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI 2: Active Alerts -->
+          <div class="dash-kpi-card">
+            <div class="kpi-header-line">
+              <span class="kpi-label">Active Alerts</span>
+            </div>
+            <div class="kpi-val-amber" id="dash-alerts-count">4</div>
+            <div class="kpi-alert-desc">Tomato Late Blight detected</div>
+            <div class="kpi-alert-desc" style="color: var(--text-secondary);">Nutrient Deficiency</div>
+            <div class="kpi-alert-footer">
+              <span class="badge-critical-pill">Critical</span>
+              <span class="alert-time-text">2 PM</span>
+            </div>
+          </div>
+
+          <!-- KPI 3: Monitored Fields -->
+          <div class="dash-kpi-card">
+            <div class="kpi-header-line">
+              <span class="kpi-label">Monitored Fields</span>
+              <!-- Minimalist Field Contours SVG Icon -->
+              <svg width="28" height="24" viewBox="0 0 28 24" fill="none" stroke="currentColor" stroke-width="1.6" class="kpi-top-icon">
+                <path d="M2 18C6 14 10 14 14 18C18 22 22 22 26 18"></path>
+                <path d="M2 12C6 8 10 8 14 12C18 16 22 16 26 12"></path>
+                <circle cx="7" cy="6" r="2" fill="none"></circle>
+                <circle cx="21" cy="6" r="2" fill="none"></circle>
+              </svg>
+            </div>
+            <div class="kpi-val-white" id="dash-fields-count">18</div>
+            <div class="kpi-fields-cols">
+              <div class="fields-stat-col">
+                <span class="fields-num-healthy">12</span>
+                <span class="fields-label-sub">Healthy</span>
+              </div>
+              <div class="fields-stat-col">
+                <span class="fields-num-risk">6</span>
+                <span class="fields-label-sub">At-Risk</span>
+              </div>
+              <div class="fields-stat-col">
+                <span class="fields-num-acres">240</span>
+                <span class="fields-label-sub">Acres</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI 4: Disease Scanner Activity -->
+          <div class="dash-kpi-card">
+            <div class="kpi-header-line">
+              <span class="kpi-label">Disease Scanner Activity</span>
+            </div>
+            <div class="kpi-val-white" id="dash-scans-count">114</div>
+            <div class="kpi-scan-sub">scans today</div>
+            <div class="kpi-scan-ago">last scan 5 min ago</div>
+          </div>
+
+        </div>
+
+        <!-- Bottom 3 Featured Cards Grid -->
+        <div class="featured-row">
+          
+          <!-- Card 1: Real-Time Crop Health Monitoring -->
+          <div class="monitoring-card">
+            <div class="monitoring-top">
+              <div>
+                <h2 class="monitoring-title">Real-Time Crop Health Monitoring</h2>
+                <p class="monitoring-subtitle">Crop Health Index</p>
+              </div>
+              <div class="monitoring-filters">
+                <button class="filter-select-pill" id="filter-fields-btn" title="Toggle Field Filter">
+                  <span>All Fields</span> <span style="font-size: 0.7rem;">▾</span>
+                </button>
+                <button class="filter-select-pill" id="filter-sector-btn" title="Toggle Sector Filter">
+                  <span>Field 4</span> <span style="font-size: 0.7rem;">▾</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Multi-color Area Spline Wave Chart -->
+            <div class="chart-container-wrap">
+              <svg class="chart-svg" viewBox="0 0 620 220" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="healthyWave" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#00E676" stop-opacity="0.55"/>
+                    <stop offset="100%" stop-color="#00E676" stop-opacity="0.02"/>
+                  </linearGradient>
+                  <linearGradient id="mildStressWave" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.6"/>
+                    <stop offset="100%" stop-color="#F59E0B" stop-opacity="0.05"/>
+                  </linearGradient>
+                  <linearGradient id="highStressWave" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#EF4444" stop-opacity="0.75"/>
+                    <stop offset="100%" stop-color="#EF4444" stop-opacity="0.08"/>
+                  </linearGradient>
+                </defs>
+
+                <!-- Y-Axis Grid Lines -->
+                <g class="chart-grid-y" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3 3">
+                  <line x1="45" y1="20" x2="610" y2="20" />
+                  <line x1="45" y1="56" x2="610" y2="56" />
+                  <line x1="45" y1="92" x2="610" y2="92" />
+                  <line x1="45" y1="128" x2="610" y2="128" />
+                  <line x1="45" y1="164" x2="610" y2="164" />
+                  <line x1="45" y1="200" x2="610" y2="200" />
+                </g>
+
+                <g class="chart-y-labels" fill="#8EA599" font-size="11" font-weight="500" text-anchor="end">
+                  <text x="36" y="24">100</text>
+                  <text x="36" y="60">80</text>
+                  <text x="36" y="96">60</text>
+                  <text x="36" y="132">40</text>
+                  <text x="36" y="168">20</text>
+                  <text x="36" y="204">0</text>
+                </g>
+
+                <!-- Vertical dashed guide lines at critical peaks -->
+                <line x1="265" y1="92" x2="265" y2="200" stroke="#8EA599" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.6"/>
+                <line x1="395" y1="56" x2="395" y2="200" stroke="#8EA599" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.6"/>
+
+                <!-- 1. Green Wave Base Area (Healthy) -->
+                <path d="M 45 200
+                         L 45 165
+                         C 90 150, 120 130, 160 148
+                         C 200 166, 230 185, 265 152
+                         C 300 120, 330 170, 360 175
+                         C 400 182, 450 140, 500 125
+                         C 550 110, 580 135, 610 145
+                         L 610 200 Z"
+                      fill="url(#healthyWave)" />
+                <path d="M 45 165
+                         C 90 150, 120 130, 160 148
+                         C 200 166, 230 185, 265 152
+                         C 300 120, 330 170, 360 175
+                         C 400 182, 450 140, 500 125
+                         C 550 110, 580 135, 610 145"
+                      fill="none" stroke="#00E676" stroke-width="2.5" stroke-linecap="round"/>
+
+                <!-- 2. Yellow/Amber Wave (Mild Stress) -->
+                <path d="M 45 165
+                         C 80 140, 110 115, 150 125
+                         C 190 135, 220 175, 265 130
+                         C 300 95, 330 140, 370 120
+                         C 410 100, 470 75, 520 85
+                         C 560 95, 585 110, 610 125
+                         L 610 200 L 45 200 Z"
+                      fill="url(#mildStressWave)" opacity="0.85"/>
+                <path d="M 45 165
+                         C 80 140, 110 115, 150 125
+                         C 190 135, 220 175, 265 130
+                         C 300 95, 330 140, 370 120
+                         C 410 100, 470 75, 520 85
+                         C 560 95, 585 110, 610 125"
+                      fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"/>
+
+                <!-- 3. Red Wave Peak (High Stress) -->
+                <path d="M 265 130
+                         C 310 80, 350 45, 395 56
+                         C 440 68, 480 82, 530 80
+                         C 570 78, 595 105, 610 110
+                         L 610 200 L 265 200 Z"
+                      fill="url(#highStressWave)" opacity="0.9"/>
+                <path d="M 265 130
+                         C 310 80, 350 45, 395 56
+                         C 440 68, 480 82, 530 80
+                         C 570 78, 595 105, 610 110"
+                      fill="none" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+
+                <!-- Dot Markers -->
+                <circle cx="265" cy="130" r="4.5" fill="#FFFFFF" stroke="#00E676" stroke-width="2.5" style="filter: drop-shadow(0 0 6px #00E676);"/>
+                <circle cx="395" cy="56" r="4.5" fill="#FFFFFF" stroke="#EF4444" stroke-width="2.5" style="filter: drop-shadow(0 0 6px #EF4444);"/>
+
+                <!-- Tooltip Badges (14:38 PM Field 4) -->
+                <g transform="translate(230, 80)">
+                  <rect x="0" y="0" width="70" height="26" rx="4" fill="#12241b" stroke="rgba(255,255,255,0.18)" stroke-width="1" />
+                  <text x="35" y="11" fill="#FFFFFF" font-size="8.5" font-weight="600" text-anchor="middle">14:38 PM</text>
+                  <text x="35" y="21" fill="#8EA599" font-size="8" text-anchor="middle">Field 4</text>
+                </g>
+
+                <g transform="translate(360, 10)">
+                  <rect x="0" y="0" width="70" height="26" rx="4" fill="#12241b" stroke="rgba(255,255,255,0.18)" stroke-width="1" />
+                  <text x="35" y="11" fill="#FFFFFF" font-size="8.5" font-weight="600" text-anchor="middle">14:38 PM</text>
+                  <text x="35" y="21" fill="#8EA599" font-size="8" text-anchor="middle">Field 4</text>
+                </g>
+
+                <!-- X-Axis Labels 01 - 14 -->
+                <g class="chart-x-labels" fill="#8EA599" font-size="10.5" font-weight="500" text-anchor="middle">
+                  <text x="45" y="218">01</text>
+                  <text x="88" y="218">02</text>
+                  <text x="132" y="218">03</text>
+                  <text x="176" y="218">04</text>
+                  <text x="220" y="218">05</text>
+                  <text x="264" y="218">06</text>
+                  <text x="308" y="218">07</text>
+                  <text x="352" y="218">08</text>
+                  <text x="396" y="218">09</text>
+                  <text x="440" y="218">10</text>
+                  <text x="484" y="218">11</text>
+                  <text x="528" y="218">12</text>
+                  <text x="572" y="218">13</text>
+                  <text x="610" y="218">14</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- Legend -->
+            <div class="monitoring-legend">
+              <div class="legend-item"><span class="legend-dot green"></span> Healthy</div>
+              <div class="legend-item"><span class="legend-dot yellow"></span> Mild Stress</div>
+              <div class="legend-item"><span class="legend-dot red"></span> High Stress</div>
+            </div>
+          </div>
+
+          <!-- Card 2: Plant Disease Scanner Preview -->
+          <div class="scanner-preview-card" onclick="window.location.href='scanner.html'" title="Click to open Plant Disease Scanner">
+            <div class="card-top-header">
+              <div>
+                <h3 class="card-title-main">Plant Disease Scanner Preview</h3>
+                <p class="card-subtitle-sub">Real-time diagnostic pane</p>
+              </div>
+              <span class="card-more-menu" title="Diagnostic options">•••</span>
+            </div>
+
+            <div class="leaf-preview-container">
+              <img src="assets/scanner-preview-leaf.jpg" alt="Tomato Leaf AI Diagnostic Preview" class="leaf-preview-img" onerror="this.onerror=null; this.src='assets/diseases/late-blight.jpg';">
+              
+              <!-- Red AI Bounding Box with Label Tag -->
+              <div class="ai-box-leaf">
+                <span class="ai-box-tag">Tomato Leaf</span>
+              </div>
+              
+              <!-- Sub-boxes over lesion spots -->
+              <div class="ai-box-spot-1"></div>
+              <div class="ai-box-spot-2"></div>
+              
+              <!-- Left Glass Badge -->
+              <div class="leaf-glass-badge-left">
+                <span class="badge-prob-text">High Probability 94%</span>
+                <span class="badge-disease-text">Late Blight detected</span>
+              </div>
+
+              <!-- Right Glass Badge -->
+              <div class="leaf-glass-badge-right">
+                <span class="badge-sev-text">Mild Severity 22%</span>
+                <span class="badge-lesions-text">6 lesions</span>
+              </div>
+            </div>
+
+            <div class="scanner-footer-meta">
+              <div>
+                <div class="scanner-meta-field">Field 4A</div>
+                <div class="scanner-meta-species">Tomato (Solanum lycopersicum)</div>
+              </div>
+              <div>14:38 PM</div>
+            </div>
+          </div>
+
+          <!-- Card 3: Current Conditions -->
+          <div class="weather-card-modern">
+            <div class="weather-header-line">
+              <h3 class="card-title-main">Current Conditions</h3>
+              <span class="card-more-menu" title="Weather options">•••</span>
+            </div>
+            <div class="weather-field-sub">Field 4</div>
+
+            <div class="weather-center-visual">
+              <img src="assets/weather-cloud.png" alt="Cloudy" class="weather-3d-cloud-img">
+              <div class="weather-large-temp" id="weather-temp">24°C</div>
+              <div class="weather-cond-desc" id="weather-condition">Cloudy</div>
+            </div>
+
+            <div class="weather-details-list">
+              <div class="weather-stat-row">
+                <span class="weather-stat-label">💧 Humidity</span>
+                <span class="weather-stat-val" id="weather-humidity">68%</span>
+              </div>
+              <div class="weather-stat-row">
+                <span class="weather-stat-label">💨 Wind</span>
+                <span class="weather-stat-val" id="weather-wind">11 km/h NW</span>
+              </div>
+              <div class="weather-stat-row">
+                <span class="weather-stat-label">🌧 Precip.</span>
+                <span class="weather-stat-val" id="weather-precip">0%</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Supplementary Tab: Monitored Fields & Recent SQLite Scans -->
+        <div class="supplementary-card">
+          <div class="supp-header">
+            <span class="supp-title">Field Sectors & Diagnostic Scan Log</span>
+            <div class="supp-tabs">
+              <button class="supp-tab-btn active" id="tab-sectors-btn">Field Sectors</button>
+              <button class="supp-tab-btn" id="tab-scans-btn">Recent Pathology Scans</button>
+            </div>
+          </div>
+          
+          <div id="tab-sectors-pane">
+            <div id="plants-list">
+              <!-- Populated dynamically by JS -->
+            </div>
+          </div>
+          
+          <div id="tab-scans-pane" style="display: none; padding: 18px 24px;">
+            <div id="recent-scans-list" style="display: flex; flex-direction: column; gap: 10px;">
+              <!-- Populated dynamically by JS -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="data.js?v=2.1"></script>
+  <script src="app.js?v=2.1"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Tab switching
+      const tabSectorsBtn = document.getElementById('tab-sectors-btn');
+      const tabScansBtn = document.getElementById('tab-scans-btn');
+      const tabSectorsPane = document.getElementById('tab-sectors-pane');
+      const tabScansPane = document.getElementById('tab-scans-pane');
+
+      if (tabSectorsBtn && tabScansBtn) {
+        tabSectorsBtn.addEventListener('click', () => {
+          tabSectorsBtn.classList.add('active');
+          tabScansBtn.classList.remove('active');
+          tabSectorsPane.style.display = 'block';
+          tabScansPane.style.display = 'none';
+        });
+
+        tabScansBtn.addEventListener('click', () => {
+          tabScansBtn.classList.add('active');
+          tabSectorsBtn.classList.remove('active');
+          tabSectorsPane.style.display = 'none';
+          tabScansPane.style.display = 'block';
+        });
+      }
+
+      // Populate Live Data
+      async function updateDashboardData() {
+        let dashData = null;
+        try {
+          dashData = await window.AgriDB.getDashboard();
+        } catch (err) {
+          dashData = {
+            user: APP_DATA.user,
+            kpis: APP_DATA.dashboard,
+            fields: APP_DATA.plants,
+            alerts: APP_DATA.alerts,
+            weather: APP_DATA.weather,
+            recent_scans: APP_DATA.history.slice(0, 5)
+          };
+        }
+
+        // Render Monitored Fields list
+        const plantsList = document.getElementById('plants-list');
+        if (plantsList) {
+          plantsList.innerHTML = '';
+          const fields = (dashData && dashData.fields) || APP_DATA.plants;
+          fields.forEach(f => {
+            let color = '#00E676';
+            if (f.health < 80) color = '#F59E0B';
+            if (f.health < 65) color = '#EF4444';
+
+            plantsList.innerHTML += `
+              <div class="plant-card">
+                <div class="plant-info">
+                  <div class="plant-avatar">${f.emoji || '🪴'}</div>
+                  <div>
+                    <div style="font-weight: 700; font-size: 0.95rem; color: #FFFFFF;">${f.name}</div>
+                    <div style="font-size: 0.8rem; color: var(--text-secondary);">Zone: ${f.location} • Species: ${f.crop}</div>
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-weight: 800; color: ${color}; font-size: 1.05rem;">${f.health || 89}% Health</div>
+                  <div style="font-size: 0.78rem; color: var(--text-secondary);">Last scan: ${f.lastScan || 'Today'}</div>
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        // Render Recent Scans list
+        const scansList = document.getElementById('recent-scans-list');
+        if (scansList) {
+          scansList.innerHTML = '';
+          const recents = (dashData && dashData.recent_scans) || APP_DATA.history.slice(0, 5);
+          recents.forEach(s => {
+            const isHealthy = (s.disease || s.result || '').toLowerCase().includes('healthy');
+            scansList.innerHTML += `
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: rgba(16, 38, 27, 0.5); border-radius: 10px; border: 1px solid rgba(34, 197, 94, 0.16); gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <img src="${s.image_url || s.image || 'assets/diseases/healthy.jpg'}" alt="${s.disease || s.result}" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover; border: 1px solid rgba(0, 230, 118, 0.25);" onerror="this.onerror=null; this.src='assets/diseases/healthy.jpg';">
+                  <div>
+                    <div style="font-weight: 700; font-size: 0.92rem; color: #FFFFFF;">${s.crop || s.plant} - <span style="color: ${isHealthy ? '#00E676' : '#EF4444'};">${s.disease || s.result}</span></div>
+                    <div style="font-size: 0.78rem; color: var(--text-secondary);">📅 ${s.date || 'Today'} • Certainty: <strong>${s.confidence || 94}%</strong></div>
+                  </div>
+                </div>
+                <div>
+                  <a href="diseases.html?search=${encodeURIComponent(s.disease || s.result)}" style="font-size: 0.8rem; color: #00E676; font-weight: 700; text-decoration: underline;">
+                    Protocol →
+                  </a>
+                </div>
+              </div>
+            `;
+          });
+        }
+      }
+
+      await updateDashboardData();
+    });
+  </script>
+</body>
+</html>
